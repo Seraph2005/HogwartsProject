@@ -253,9 +253,33 @@ public class Main {
         }
     }
 
-    public static void TeacherMenu(Teacher teacher)
-    {
-
+    public static void TeacherMenu(Teacher teacher) {
+        int task = 0;
+        while (task != 8) {
+            ClearScreen();
+            System.out.println("Welcome to your dashboard, " + teacher.getUsername() + ".\n" +
+                    "What do you wish to do here?\n" +
+                    "1- View courses\n" +
+                    "2- Take course\n" +
+                    "3- Score students\n" +
+                    "4- Show score\n" +
+                    "5- Request course\n" +
+                    "6- Change username\n" +
+                    "7- Change password\n" +
+                    "8- Logout\n");
+            task = input.nextInt();
+            ClearScreen();
+            switch (task) {
+                case 1://Veiw all courses taken and students in each class
+                {
+                    for(Course course : teacher.getCoursesTaken())
+                    {
+                        System.out.println(course.getTitle() + "\nStudents list: \n");
+                        course.ShowStudents();
+                    }
+                }
+            }
+        }
     }
 
     public static void AssistantMenu(Assistant assistant)
