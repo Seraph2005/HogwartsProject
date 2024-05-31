@@ -1,15 +1,17 @@
 package Users;
 
-import Hogwarts.Hogwarts;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class Assistant extends Account{
-    private static final List<List<String>> inbox = new ArrayList<>();
+    private static final List<List<String>> signups = new ArrayList<>();
 
-    public static List<List<String>> getInbox() {
-        return inbox;
+    public Assistant(String username, String password, String house) {
+        super(username, password, house);
+    }
+
+    public static List<List<String>> getSignups() {
+        return signups;
     }
 
 }

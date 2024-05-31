@@ -1,37 +1,26 @@
 package Users;
 
-import Course.Course;
-import Hogwarts.Hogwarts;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import static Hogwarts.Hogwarts.getUsers;
 
 public abstract class Account implements AccountManagement {
-    private String username;
     private String password;
-    private String house;
+    private final String house;
+    String username;
 
-    //Getters and Setters
-    public void setUsername(String username) {
+    public Account(String username, String password, String house) {
+        this.password = DigestUtils.sha256Hex(password);
+        this.house = house;
         this.username = username;
     }
-    public void setPassword(String password) {
-        this.password = DigestUtils.sha256Hex(password);
-    }
-    public void setHouse(String house)
-    {
-        this.house = house;
-    }
 
+    //Getters and Setters
     public String getUsername() {
         return username;
-    }
-    public String getPassword() {
-        return password;
     }
     public String getHouse()
     {
@@ -58,34 +47,22 @@ public abstract class Account implements AccountManagement {
 
     @Override
     public void changePassword(String newPassword) {
-        this.password = newPassword;
+        this.password = DigestUtils.sha256Hex(newPassword);
     }
 
-    public void SignUpRequest(String role, String username, String password)
+    public static void SignUpRequest(String role, String username, String password)
     {
         List<String> req = new ArrayList<>();
         req.add(role);
-        req.add("SignUp");
         req.add(username);
         req.add(password);
-        Assistant.getInbox().add(req);
-    }
-
-    public void NewCourseRequest(String role, String course)
-    {
-        List<String> req = new ArrayList<>();
-        req.add(role);
-        req.add("NewCourse");
-        req.add(course);
-        Assistant.getInbox().add(req);
+        Assistant.getSignups().add(req);
     }
 
     public static boolean IsUsernameInList(String username)
     {
-        for(Account user : getUsers())
-        {
-            if(user.getUsername().equals(username))
-            {
+        for(Account user : getUsers()) {
+            if(user.getUsername().equals(username)) {
                 return true;
             }
         }

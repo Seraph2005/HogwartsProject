@@ -1,36 +1,29 @@
 package Users;
 
 import Course.Course;
-import Hogwarts.Hogwarts;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.Map;
 import java.util.HashMap;
 
 public class Student extends Account{
-    private List<Course> coursesTaken = new ArrayList<>();
-    private Map<String, Double> scores = new HashMap<>();
-    private String house;
+    private final List<Course> courses = new ArrayList<>();
+    Map<String, Double> scores = new HashMap<>();
+
+    public Student(String username, String password, String house)
+    {
+        super(username, password, house);
+    }
 
     //Getters
-    public List<Course> getCoursesTaken()
+    public List<Course> getCourses()
     {
-        return coursesTaken;
+        return courses;
     }
-    public List<Double> getScores()
+    public Map<String, Double> getScores()
     {
-        return this.scores;
-    }
-    public String getHouse()
-    {
-        return this.house;
-    }
-
-    public void showScore(String title)
-    {
-        System.out.println(scores.get(title));
+        return scores;
     }
 
 }

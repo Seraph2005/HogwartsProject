@@ -6,20 +6,34 @@ import Hogwarts.Hogwarts;
 import java.util.*;
 
 public class Teacher extends Account{
-    private List<Course> coursesTaken = new ArrayList<>();
-    private Map<String, Double> scores = new HashMap<>();
-    private String house;
+    private final List<Course> courses = new ArrayList<>();
+    private final Map<String, Double> scores = new HashMap<>();
     private int score;
+
+    public Teacher(String username, String password, String house)
+    {
+        super(username, password, house);
+    }
 
     //Getters and setters
     public List<Course> getCoursesTaken()
     {
-        return coursesTaken;
+        return courses;
+    }
+    public int getScore()
+    {
+        return score;
     }
 
     public void addScore(int score)
     {
         this.score = (this.score + score)/2;
+    }
+
+    public void addCourse(String title, Teacher teacher) {
+        Course course = new Course(title, teacher);
+        courses.add(course);
+        Hogwarts.getCourses().add(course);
     }
 
 }

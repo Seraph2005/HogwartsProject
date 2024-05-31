@@ -6,12 +6,13 @@ import Hogwarts.Hogwarts;
 
 import java.util.List;
 import java.util.Scanner;
-import java.util.UUID;
 
 import static Users.Account.IsUsernameInList;
+import static Users.Account.SignUpRequest;
 
 public class Main {
     static Scanner input = new Scanner(System.in);
+    static Scanner in = new Scanner(System.in);
 
     public static void main(String[] args) {
         runMenu();
@@ -36,241 +37,158 @@ public class Main {
         String password = input.next();
         if(task == 1)
         {
-            switch (role)
-            {
-                case 1:
-                {
-                    for(Student student : Hogwarts.getStudents())
-                    {
-                        if(student.getUsername().equals(username))
-                        {
-                            if(student.validatePassword(password))
+            switch (role) {
+                case 1 -> {
+                    for (Student student : Hogwarts.getStudents()) {
+                        if (student.getUsername().equals(username)) {
+                            if (student.validatePassword(password))
                                 StudentMenu(student);
-                            else
-                            {
+                            else {
                                 System.out.println("Password is not correct.");
+                                Holder();
                                 break;
                             }
                         }
                     }
                     System.out.println("UsernameNotFound!");
-                    break;
+                    Holder();
                 }
-                case 2:
-                {
-                    for(Teacher teacher : Hogwarts.getTeachers())
-                    {
-                        if(teacher.getUsername().equals(username))
-                        {
-                            if(teacher.validatePassword(password))
+                case 2 -> {
+                    for (Teacher teacher : Hogwarts.getTeachers()) {
+                        if (teacher.getUsername().equals(username)) {
+                            if (teacher.validatePassword(password))
                                 TeacherMenu(teacher);
-                            else
-                            {
+                            else {
                                 System.out.println("Password is not correct.");
+                                Holder();
                                 break;
                             }
                         }
                     }
                     System.out.println("UsernameNotFound!");
-                    break;
+                    Holder();
                 }
-                case 3:
-                {
-                    for(Assistant assistant : Hogwarts.getAssistants())
-                    {
-                        if(assistant.getUsername().equals(username))
-                        {
-                            if(assistant.validatePassword(password))
+                case 3 -> {
+                    for (Assistant assistant : Hogwarts.getAssistants()) {
+                        if (assistant.getUsername().equals(username)) {
+                            if (assistant.validatePassword(password))
                                 AssistantMenu(assistant);
-                            else
-                            {
+                            else {
                                 System.out.println("Password is not correct.");
+                                Holder();
                                 break;
                             }
                         }
                     }
                     System.out.println("UsernameNotFound!");
+                    Holder();
                 }
             }
         } else if (task == 2) {
             if(IsUsernameInList(username))
             {
                 System.out.println("This username has already signed up.");
+                Holder();
             }
-            switch (role)
-            {
-                case 1:
-                {
-                    Student student = new Student();
-                    Hogwarts.getUsers().add(student);
-                    Hogwarts.getStudents().add(student);
-                    student.SignUpRequest("student", username, password);
-                    break;
-                }
-                case 2:
-                {
-                    Teacher teacher = new Teacher();
-                    Hogwarts.getUsers().add(teacher);
-                    Hogwarts.getTeachers().add(teacher);
-                    teacher.SignUpRequest("teacher", username, password);
-                    break;
-                }
-                case 3:
-                {
-                    Assistant assistant = new Assistant();
-                    Hogwarts.getUsers().add(assistant);
-                    Hogwarts.getAssistants().add(assistant);
-                    assistant.SignUpRequest("assistant", username, password);
-                    break;
-                }
+            switch (role) {
+                case 1 ->
+                    SignUpRequest("student", username, password);
+                case 2 ->
+                    SignUpRequest("teacher", username, password);
+                case 3 ->
+                    SignUpRequest("assistant", username, password);
             }
             System.out.println("Your signUp request is waiting for confirmation.");
+            Holder();
         }
-        return;
     }
 
     public static void StudentMenu(Student student)
     {
         int task = 0;
-        while(task != 7)
+        while(task != 5)
         {
             ClearScreen();
             System.out.println("Welcome to Your Dashboard " + student.getUsername() + ".\n" +
                     "What do you wish to do here?\n" +
                     "1- Take course\n" +
                     "2- View your courses and scores\n" +
-                    "3- Request course\n" +
-                    "4- Score teacher\n" +
-                    "5- Change username\n" +
-                    "6- Change password\n" +
-                    "7- Logout");
+                    "3- Change username\n" +
+                    "4- Change password\n" +
+                    "5- Logout");
             task = input.nextInt();
             ClearScreen();
-            switch (task)
-            {
-                case 1://Taking a new course
+            switch (task) {
+                case 1 ->//Taking a new course
                 {
                     Hogwarts.viewAllCourses();
                     System.out.print("Enter the title: ");
                     String title = input.nextLine();
-                    Boolean taken = false;
-                    Boolean inList = false;
-                    for (Course course : Hogwarts.getCoures()) {
+                    boolean taken = false;
+                    boolean inList = false;
+                    for (Course course : Hogwarts.getCourses()) {
                         if (title.equals(course.getTitle())) {
                             inList = true;
-                            for(Course c : student.getCoursesTaken())
-                            {
-                                if(c.getTitle().equals(title))
-                                {
+                            for (Course c : student.getCourses()) {
+                                if (c.getTitle().equals(title)) {
                                     taken = true;
                                     System.out.println("This course is already taken.");
                                 }
                             }
-                            if(!taken)
-                            {
-                                student.getCoursesTaken().add(course);
-                                System.out.println("Course succesfully added.");
+                            if (!taken) {
+                                student.getCourses().add(course);
+                                student.getScores().put(course.getTitle(), 0.0);
+                                System.out.println("Course successfully added.");
                             }
                             break;
                         }
                     }
-                    if(!inList)
+                    if (!inList)
                         System.out.println("CourseNotFound.");
-                    break;
                 }
-                case 2://View courses taken and the score
+                case 2 ->//View courses taken and the score
                 {
-                    for(Course course : student.getCoursesTaken())
-                    {
+                    for (Course course : student.getCourses()) {
                         System.out.println("- " + course.getTitle() + " with "
                                 + course.getTeacher().getUsername() + "\nScore: ");
-                                student.showScore(course.getTitle());
+                        student.getScores().get(course.getTitle());
                     }
-                    break;
                 }
-                case 3://Requesting new course from admin
-                {
-                    System.out.print("Enter the title of your desired course: ");
-                    String title = input.nextLine();
-                    Boolean inList = false;
-                    for (Course course : Hogwarts.getCoures()) {
-                        if (title.equals(course.getTitle())) {
-                            inList = true;
-                            System.out.println("This Course Already Exists.");
-                            break;
-                        }
-                    }
-                    if(!inList) {
-                        student.NewCourseRequest("student", title);
-                        System.out.println("Request sent to admin.");
-                    }
-                    break;
-                }
-                case 4://Score a teacher
-                {
-                    for (Course course : student.getCoursesTaken())
-                    {
-                        System.out.println("- " + course.getTeacher().getUsername() + " for " + course.getTitle());
-                    }
-                    System.out.print("Enter teacher's name: ");
-                    String name = input.nextLine();
-                    Boolean inList = false;
-                    for(Course course : student.getCoursesTaken())
-                    {
-                        if(course.getTeacher().getUsername().equals(name))
-                        {
-                            inList = true;
-                            System.out.print("Enter a number from 1 to 100: ");
-                            int score = input.nextInt();
-                            if(score > 100)
-                                score = 100;
-                            if(score < 1)
-                                score = 1;
-                            course.getTeacher().addScore(score);
-                        }
-                    }
-                    if(!inList)
-                        System.out.println("TeacherNotFound.");
-                    break;
-                }
-                case 5://Changing username
+                case 3 ->//Changing username
                 {
                     System.out.print("Enter the new username: ");
                     String username = input.nextLine();
                     student.changeUsername(username);
-                    break;
                 }
-                case 6://Changing password
+                case 4 ->//Changing password
                 {
                     System.out.print("Enter new password: ");
                     String newPassword = input.nextLine();
                     student.changePassword(newPassword);
-                    break;
                 }
             }
-            System.out.println("Enter a key to quit.");
-            input.nextLine();
+            Holder();
+            return;
         }
     }
 
     public static void TeacherMenu(Teacher teacher) {
         int task = 0;
-        while (task != 8) {
+        while (task != 6) {
             ClearScreen();
             System.out.println("Welcome to your dashboard, " + teacher.getUsername() + ".\n" +
+                    "Your score: " + teacher.getScore() + "\n" +
                     "What do you wish to do here?\n" +
                     "1- View courses\n" +
                     "2- Take course\n" +
                     "3- Score students\n" +
-                    "4- Show score\n" +
-                    "5- Request course\n" +
-                    "6- Change username\n" +
-                    "7- Change password\n" +
-                    "8- Logout\n");
+                    "4- Change username\n" +
+                    "5- Change password\n" +
+                    "6- Logout\n");
             task = input.nextInt();
             ClearScreen();
             switch (task) {
-                case 1://Veiw all courses taken and students in each class
+                case 1://View all courses taken and students in each class
                 {
                     for(Course course : teacher.getCoursesTaken())
                     {
@@ -278,17 +196,138 @@ public class Main {
                         course.ShowStudents();
                     }
                 }
+                case 2://Take new course
+                {
+                    System.out.print("Enter your desired course: ");
+                    String title = input.next();
+                    teacher.addCourse(title, teacher);
+                }
+                case 3://Score students
+                {
+                    for(Course course: teacher.getCoursesTaken()) {
+                        System.out.println(course.getTitle());
+                        course.ShowStudents();
+                        System.out.print("Enter Student's name: ");
+                        String name = input.nextLine();
+                        boolean inlist = false;
+                        for(Student student: course.getStudents())
+                        {
+                            if(name.equals(student.getUsername()))
+                            {
+                                inlist = true;
+                                System.out.print("Enter the score: ");
+                                double score = input.nextDouble();
+                                student.getScores().put(course.getTitle(), score);
+                                break;
+                            }
+                        }
+                        if(!inlist){
+                            System.out.println("Student doesn't exist.");
+                            Holder();
+                        }
+                    }
+                }
+                case 4://Changing username
+                {
+                    System.out.print("Enter the new username: ");
+                    String username = input.nextLine();
+                    teacher.changeUsername(username);
+                    break;
+                }
+                case 5://Changing password
+                {
+                    System.out.print("Enter new password: ");
+                    String newPassword = input.nextLine();
+                    teacher.changePassword(newPassword);
+                    break;
+                }
             }
         }
     }
 
     public static void AssistantMenu(Assistant assistant)
     {
-
+        int task = 0;
+        while (task != 8) {
+            ClearScreen();
+            System.out.println("Welcome to your dashboard, " + assistant.getUsername() + ".\n" +
+                    "What do you wish to do here?\n" +
+                    "1- View courses\n" +
+                    "2- View Teachers\n" +
+                    "3- View Students\n" +
+                    "4- View Assistants\n" +
+                    "5- Accept signup requests\n" +
+                    "6- Change username\n" +
+                    "7- Change password\n" +
+                    "8- Logout\n");
+            task = input.nextInt();
+            ClearScreen();
+            switch (task) {
+                case 1://view courses
+                {
+                    Hogwarts.viewAllCourses();
+                    break;
+                }
+                case 2://view teachers
+                {
+                    Hogwarts.viewAllTeachers();
+                    break;
+                }
+                case 3://view students
+                {
+                    Hogwarts.viewAllStudents();
+                    break;
+                }
+                case 4://view Assistants
+                {
+                    Hogwarts.viewAllAssistants();
+                    break;
+                }
+                case 5://accept signup requests
+                {
+                    for(List<String> req : Assistant.getSignups()) {
+                        ClearScreen();
+                        System.out.println("User " + req.get(1) + " wants to signup for " + req.get(0) + " role here, will you accept this request?(y/n)");
+                        String c = input.nextLine();
+                        if(c.equals("y"))
+                        {
+                            System.out.println("Choose this user's house.\n-Gryffindor\n-Hufflepuff\n-Ravenclaw\n-Slytherin");
+                            String house = in.nextLine();
+                            switch (req.get(0)) {
+                                case "assistant" -> Hogwarts.addAssistant(req.get(1), req.get(2), house);
+                                case "teacher" -> Hogwarts.addTeacher(req.get(1), req.get(2), house);
+                                case "student" -> Hogwarts.addStudent(req.get(1), req.get(2), house);
+                            }
+                        }
+                    }
+                    Assistant.getSignups().clear();
+                }
+                case 6://Changing username
+                {
+                    System.out.print("Enter the new username: ");
+                    String username = input.nextLine();
+                    assistant.changeUsername(username);
+                    break;
+                }
+                case 7://Changing password
+                {
+                    System.out.print("Enter new password: ");
+                    String newPassword = input.nextLine();
+                    assistant.changePassword(newPassword);
+                    break;
+                }
+            }
+        }
     }
 
     public static void ClearScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
+    }
+
+    public static void Holder()
+    {
+        System.out.println("Enter a key to continue.");
+        input.next();
     }
 }
